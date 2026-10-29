@@ -29,7 +29,7 @@ conda activate biomass
 pip install -r requirements.txt
 ```
 
-Then copy `eo_credentials_template.txt` to `eo_credentials.txt` (somewhere outside the repo is safest), fill it in, and point notebook 01 at it. The real file is in `.gitignore` and should never be committed. The MAAP offline token expires after about 90 days, or sooner if it isn't used, and then everything fails with a 401 and no other warning.
+Then copy `eo_credentials_template.txt` to `eo_credentials.txt` (somewhere outside the repo is safest), fill it in, and point notebook 01 and the swath scanner at it. Keep the quotes around each value, the swath scanner reads the file as Python. The real file is in `.gitignore` and should never be committed. The MAAP offline token expires after about 90 days, or sooner if it isn't used, and then everything fails with a 401 and no other warning.
 
 Accounts needed:
 
@@ -43,6 +43,7 @@ Accounts needed:
 - **Band order.** The SCS TIFFs store the bands as VV, VH, HV, HH, the reverse of the annotation XML. The code reads the order from the band metadata and falls back to VV, VH, HV, HH with a warning. Reading it the wrong way round swaps HH and VV, which flips the sign of the CPD and inverts HH/VV.
 - **Look side.** Read from the annotation if it's there, otherwise assumed right looking. A wrong look side mirrors the geolocation, so check the corners printed in notebook 02 against the KML footprint the first time.
 - **Annotation tag names.** `bm_tools.read_annotation` looks for a few spellings of each tag. If a product uses another it stops and says which tag it couldn't find, add the name to the list there.
+- **Swath scanner run time.** A full scan of the catalogue takes something like 8 to 11 hours and the API drops out now and then. It checkpoints as it goes, so just rerun the scan cell until it says it reached the end.
 - **Cross-spectrum sign.** In the first version every tile pointed exactly opposite to the wave model, so for Biomass the sign is reversed (`CROSS_SIGN = -1` in notebook 05). This rests on a few scenes and needs confirming on more.
 - **CPD sign convention.** With permittivity written as eps' - i eps'' the Bragg CPD over the sea is about +1 deg. With +i eps'' it flips. Check which one a paper uses before comparing signs.
 - **Wave height is not measured.** Where it appears it's an estimate from an assumed steepness, and labelled that way.
